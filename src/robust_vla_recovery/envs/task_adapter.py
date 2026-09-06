@@ -119,7 +119,7 @@ class TaskAdapter:
         self.last_info: dict[str, Any] = {}
         self.events: list[dict[str, Any]] = []
 
-    def reset(self, seed: int = 0, **kwargs: Any) -> tuple[Any, dict]:
+    def reset(self, seed: int = 378, **kwargs: Any) -> tuple[Any, dict]:
         if kwargs:
             raise ValueError(f"unsupported reset options: {sorted(kwargs)}")
         if self.closed:

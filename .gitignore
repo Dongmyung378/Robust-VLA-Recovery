@@ -22,7 +22,6 @@ configs/local.toml
 
 # Experiment products and large local data
 outputs/**
-!outputs/.gitkeep
 /data/
 checkpoints/
 wandb/

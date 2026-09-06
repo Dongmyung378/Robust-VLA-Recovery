@@ -1,6 +1,6 @@
 import tempfile
-import textwrap
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 
 from robust_vla_recovery.envs.libero_smoke import (
@@ -21,6 +21,7 @@ class LiberoSmokeConfigTest(unittest.TestCase):
         config = load_libero_smoke_config(DEFAULT_CONFIG)
         self.assertEqual(config.suite, "libero_spatial")
         self.assertEqual(config.task_id, 0)
+        self.assertEqual(config.seed, 378)
         self.assertEqual(config.max_steps, 280)
         self.assertEqual(config.camera_names, ("agentview_image", "robot0_eye_in_hand_image"))
         self.assertEqual(resolve_artifact_root(config, REPO_ROOT), REPO_ROOT / "outputs" / "day03")
@@ -57,18 +58,12 @@ class LiberoSmokeConfigTest(unittest.TestCase):
             )
 
     @staticmethod
+    @contextmanager
     def _temporary_config(text: str):
-        class TemporaryConfig:
-            def __enter__(self) -> Path:
-                self.directory = tempfile.TemporaryDirectory()
-                path = Path(self.directory.name) / "config.toml"
-                path.write_text(textwrap.dedent(text), encoding="utf-8")
-                return path
-
-            def __exit__(self, exc_type, exc_value, traceback) -> None:
-                self.directory.cleanup()
-
-        return TemporaryConfig()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "config.toml"
+            path.write_text(text, encoding="utf-8")
+            yield path
 
 
 if __name__ == "__main__":

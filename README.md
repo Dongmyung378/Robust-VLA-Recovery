@@ -18,19 +18,26 @@ detection and closed-loop recovery in LIBERO.
 See [the project charter](docs/project_charter.md) for the research question,
 task definitions, metrics, and scope-reduction rules.
 
+New single-seed runs default to `378`. Historical results retain their original
+seeds; `configs/rollout.toml` retains the five-seed Day 5 reference plan.
+
 ## Repository layout
 
 ```text
-configs/        Runtime, task, perturbation, training, and evaluation configs
+configs/        Runtime and task configs
 src/            Installable Python package
-scripts/        Operator-facing commands
+scripts/        Real-simulator contract checks
 tests/          Fast unit and smoke tests
 docs/           Project decisions and daily evaluations
-assets/         Curated figures and demo assets
-outputs/        Generated runs (ignored except for the directory marker)
+outputs/        Generated runs (ignored by Git)
 ```
 
 ## Core smoke test
+
+Install the package before using the `rvla-*` commands. These entry points
+replace the former `scripts/run_*.py`, replay, and config-validation wrappers.
+Empty future-feature packages and directory markers have been removed; create
+those directories when their implementation is needed.
 
 The core package has no third-party runtime dependency. Python 3.12 is the
 supported version.
@@ -39,7 +46,7 @@ supported version.
 python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 python -m pip install --no-deps -e .
-python scripts/validate_config.py configs/default.toml
+rvla-validate-config configs/default.toml
 python -m unittest discover -s tests -v
 ```
 
@@ -54,7 +61,7 @@ conda activate robust-vla-recovery
 python -m pip install uv==0.12.9
 uv pip sync requirements/simulation-linux.lock --torch-backend cu128 --no-build-isolation
 uv pip install --no-deps -e .
-python scripts/validate_config.py configs/default.toml
+rvla-validate-config configs/default.toml
 python -m unittest discover -s tests -v
 ```
 
@@ -70,7 +77,7 @@ offscreen rendering:
 ```bash
 conda activate robust-vla-recovery
 MUJOCO_GL=egl PYOPENGL_PLATFORM=egl \
-  python scripts/run_libero_smoke.py configs/tasks/libero_smoke.toml
+  rvla-run-libero-smoke configs/tasks/libero_smoke.toml
 ```
 
 The runner creates a unique directory under `outputs/day03/` containing
@@ -79,7 +86,7 @@ Artifacts are intentionally ignored by Git. Verify and decode a saved episode
 without a display server with:
 
 ```bash
-python scripts/replay_libero_episode.py outputs/day03/<run>/metadata.json
+rvla-replay-episode outputs/day03/<run>/metadata.json
 ```
 
 The replay command rejects hash mismatches, inconsistent trajectory lengths,
@@ -91,13 +98,13 @@ for the verified reference run and interpretation.
 From the repository root in the simulation environment:
 
 ```bash
-python scripts/run_tasks.py --list
-python scripts/run_tasks.py --task all --seed 20260905
-python scripts/run_tasks.py --task stack --seed 20260905 --instruction-index 2
+rvla-run-tasks --list
+rvla-run-tasks --task all --seed 378
+rvla-run-tasks --task stack --seed 378 --instruction-index 2
 ```
 
 `--task` accepts `pick_place`, `stack`, `open_drawer`, `shelf_place`, or `all`.
-Each task has five meaning-preserving instructions (indices 0–4). The catalog at
+Each task has five meaning-preserving instructions (indices 0-4). The catalog at
 `configs/tasks/catalog.toml` fixes the native task name, target object, success
 predicate, 400-step horizon, and 20 Hz control rate. The CLI resolves native IDs
 by name and rejects a mismatch with the installed BDDL goal or language.
@@ -133,10 +140,10 @@ initial-state/instruction/perturbation provenance. Images use lossless gzip;
 an H.264 preview can be exported separately.
 
 ```bash
-python scripts/run_rollouts.py collect --dry-run
-python scripts/run_rollouts.py collect --config configs/rollout.toml
-python scripts/run_rollouts.py verify outputs/day05/<batch>/batch.json
-python scripts/run_rollouts.py replay outputs/day05/<batch>/<episode>/metadata.json \
+rvla-rollouts collect --dry-run
+rvla-rollouts collect --config configs/rollout.toml
+rvla-rollouts verify outputs/day05/<batch>/batch.json
+rvla-rollouts replay outputs/day05/<batch>/<episode>/metadata.json \
   --video outputs/day05/<batch>/<episode>/preview.mp4
 ```
 
@@ -146,7 +153,7 @@ checks lengths/time alignment, and rejects incomplete or corrupted episodes.
 See [the format and interruption contract](docs/rollout_format.md) for schema,
 failure handling, compression, and storage estimates.
 The [Day 5 evaluation](docs/day05_evaluation.md) records the executed batch,
-37 passing tests, and measured 1.19 GiB storage for twenty episodes.
+42 passing tests, and measured 1.19 GiB storage for twenty episodes.
 
 Data-only tests (no simulator or GPU required):
 

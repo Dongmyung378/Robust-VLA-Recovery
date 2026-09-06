@@ -1,5 +1,5 @@
 [run]
-seed = 20260903
+seed = 378
 device = "auto"
 output_dir = "outputs"
 deterministic = true

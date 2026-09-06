@@ -10,14 +10,10 @@ class ImportSmokeTest(unittest.TestCase):
             "robust_vla_recovery.data",
             "robust_vla_recovery.data.rollout",
             "robust_vla_recovery.data.collection",
-            "robust_vla_recovery.detection",
             "robust_vla_recovery.envs",
             "robust_vla_recovery.envs.task_adapter",
             "robust_vla_recovery.envs.libero_tasks",
             "robust_vla_recovery.envs.task_cli",
-            "robust_vla_recovery.evaluation",
-            "robust_vla_recovery.policies",
-            "robust_vla_recovery.recovery",
         )
         for module in modules:
             with self.subTest(module=module):

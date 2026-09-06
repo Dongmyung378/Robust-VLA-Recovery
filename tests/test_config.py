@@ -1,6 +1,6 @@
 import tempfile
-import textwrap
 import unittest
+from contextlib import contextmanager
 from pathlib import Path
 
 from robust_vla_recovery.config import ConfigError, load_config, resolve_output_dir
@@ -13,7 +13,7 @@ DEFAULT_CONFIG = REPO_ROOT / "configs" / "default.toml"
 class ConfigTest(unittest.TestCase):
     def test_default_config_is_valid(self) -> None:
         config = load_config(DEFAULT_CONFIG)
-        self.assertEqual(config.run.seed, 20260903)
+        self.assertEqual(config.run.seed, 378)
         self.assertEqual(config.run.device, "auto")
         self.assertEqual(len(config.project.tasks), 4)
         self.assertEqual(resolve_output_dir(config, REPO_ROOT), REPO_ROOT / "outputs")
@@ -41,18 +41,12 @@ class ConfigTest(unittest.TestCase):
                 load_config(path)
 
     @staticmethod
+    @contextmanager
     def _temporary_config(text: str):
-        class TemporaryConfig:
-            def __enter__(self) -> Path:
-                self.directory = tempfile.TemporaryDirectory()
-                path = Path(self.directory.name) / "config.toml"
-                path.write_text(textwrap.dedent(text), encoding="utf-8")
-                return path
-
-            def __exit__(self, exc_type, exc_value, traceback) -> None:
-                self.directory.cleanup()
-
-        return TemporaryConfig()
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "config.toml"
+            path.write_text(text, encoding="utf-8")
+            yield path
 
 
 if __name__ == "__main__":

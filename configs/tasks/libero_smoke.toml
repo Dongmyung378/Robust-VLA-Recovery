@@ -4,7 +4,7 @@ task_id = 0
 init_state_index = 0
 
 [episode]
-seed = 20260904
+seed = 378
 max_steps = 280
 control_frequency = 20
 settle_steps = 10

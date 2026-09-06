@@ -1,8 +1,8 @@
-# Day 4 — Four LIBERO task adapters
+# Day 4 - Four LIBERO task adapters
 
 ## 판정과 범위
 
-**PASS — 로드맵의 4일차 완료 기준 충족.** 검증일: 2026-09-05.
+**PASS - 로드맵의 4일차 완료 기준 충족.** 검증일: 2026-09-05.
 
 네 태스크의 reset, native success, timeout, 실패 처리, 언어 지시를 공통
 인터페이스로 감쌌고 하나의 CLI에서 각각 또는 모두 실행할 수 있다. 실제
@@ -88,10 +88,10 @@ CLI는 실행 오류를 summary에 기록하고 나머지 태스크 결과도 �
 
 ## 실행 증거
 
-기준 명령 (repository root, WSL simulation environment):
+기준 실행의 동등 명령 (현재 CLI, repository root, WSL simulation environment):
 
 ```bash
-python scripts/run_tasks.py --task all --seed 20260905
+rvla-run-tasks --task all --seed 20260905
 ```
 
 | 태스크 | 실행 step | 디코딩 frame | 종료 | 영상·trace hash 검증 |

@@ -6,7 +6,7 @@ import argparse
 import json
 import os
 import platform
-from dataclasses import asdict
+from dataclasses import asdict, replace
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -28,7 +28,7 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--list", action="store_true", help="List tasks without simulation")
     parser.add_argument("--task", default="all",
                         help="all, pick_place, stack, open_drawer, shelf_place")
-    parser.add_argument("--seed", type=int, default=20260905)
+    parser.add_argument("--seed", type=int, default=378)
     parser.add_argument("--init-state-index", type=int, default=0)
     parser.add_argument("--instruction-index", type=int, default=0)
     parser.add_argument("--output-dir", type=Path, default=Path("outputs/day04"))
@@ -75,10 +75,10 @@ def main(argv: list[str] | None = None) -> int:
             backend = LiberoTaskBackend(spec)
             adapter = TaskAdapter(spec, backend, instruction_index=args.instruction_index,
                                   init_state_index=args.init_state_index)
-            config = LiberoSmokeConfig(
-                **{**asdict(config_template), "task_id": backend.task_id,
-                   "max_steps": spec.horizon, "control_frequency": spec.control_frequency,
-                   "settle_steps": spec.settle_steps, "video_fps": spec.control_frequency}
+            config = replace(
+                config_template, task_id=backend.task_id, max_steps=spec.horizon,
+                control_frequency=spec.control_frequency, settle_steps=spec.settle_steps,
+                video_fps=spec.control_frequency,
             )
             print(f"Running {key}: {spec.suite}/{backend.task_id}", flush=True)
             metadata_path = run_libero_smoke(

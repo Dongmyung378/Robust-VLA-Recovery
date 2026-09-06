@@ -1,8 +1,8 @@
-# Day 5 — Rollout logger
+# Day 5 - Rollout logger
 
 ## 판정
 
-**PASS — 로드맵의 5일차 완료 기준 충족.** 검증일: 2026-09-05.
+**PASS - 로드맵의 5일차 완료 기준 충족.** 검증일: 2026-09-05.
 
 2026-09-06 재개 시 완료된 수집·검증 결과를 보존하고, 남아 있던 `rvla-rollouts`
 CLI의 editable 설치 반영을 마쳤다. 설치된 명령의 `collect --dry-run`과 `pip check`가
@@ -22,7 +22,7 @@ CLI의 editable 설치 반영을 마쳤다. 설치된 명령의 `collect --dry-r
    검사, batch manifest, 개별/전체 검증, 파생 MP4 export를 제공한다.
 3. `configs/rollout.toml`: 네 태스크, seed 20260906…20260910, 초기상태 index 0…4,
    지시문 index 0…4, 256×256 RGB, 명시적인 clean-v1 조건을 고정한다.
-4. `scripts/run_rollouts.py`: collect / verify / replay 공통 CLI.
+4. `rvla-rollouts`: collect / verify / replay 공통 CLI.
 5. `tests/test_rollout.py`: 프레임 누락, step 중복, 시간축 불일치, byte 및 pixel 손상,
    NaN, 저장 오류, metadata 변조, 미완료 episode, 누락된 batch 항목을 검사한다.
 6. CI에 GPU 없이 numpy/h5py만 설치하는 data-integrity job을 추가했다. 원격 CI는
@@ -124,8 +124,8 @@ HDF5에서 만들어졌으며 simulator를 재실행하거나 그림을 합성�
 
 ```bash
 # WSL simulation environment, repository root
-python scripts/run_rollouts.py collect --config configs/rollout.toml
-python scripts/run_rollouts.py verify outputs/day05/<new-batch>/batch.json
+rvla-rollouts collect --config configs/rollout.toml
+rvla-rollouts verify outputs/day05/<new-batch>/batch.json
 ```
 
 outputs는 Git에서 제외되므로 clone에 위 로컬 evidence가 포함되지 않는다. 새 수집은

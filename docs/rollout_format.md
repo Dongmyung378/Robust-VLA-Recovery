@@ -51,7 +51,7 @@ becomes `complete` or `failed`. Errors are retained without automatic retries.
 | `observations/timestamp_ns` | `(T+1,)` | int64, frame index × 50,000,000 |
 | `transitions/action` | `(T, 7)` | float32, finite and in [-1, 1] |
 | `transitions/reward` | `(T,)` | float64, finite |
-| `transitions/step_index` | `(T,)` | int64, exactly 0…T−1 |
+| `transitions/step_index` | `(T,)` | int64, exactly 0…T-1 |
 | `transitions/terminated`, `truncated` | `(T,)` each | bool |
 | `transitions/is_success`, `native_success` | `(T,)` each | bool; latched vs current native success |
 | `transitions/stable_success`, `target_released` | `(T,)` each | bool; Day 4 diagnostics |
@@ -129,11 +129,11 @@ treated as guaranteed storage requirements for future perturbed policy rollouts.
 From repository root in the simulation environment:
 
 ```bash
-python scripts/run_rollouts.py collect --dry-run
-python scripts/run_rollouts.py collect --config configs/rollout.toml
-python scripts/run_rollouts.py verify outputs/day05/<batch>/batch.json
-python scripts/run_rollouts.py replay outputs/day05/<batch>/<episode>/metadata.json
-python scripts/run_rollouts.py replay outputs/day05/<batch>/<episode>/metadata.json \
+rvla-rollouts collect --dry-run
+rvla-rollouts collect --config configs/rollout.toml
+rvla-rollouts verify outputs/day05/<batch>/batch.json
+rvla-rollouts replay outputs/day05/<batch>/<episode>/metadata.json
+rvla-rollouts replay outputs/day05/<batch>/<episode>/metadata.json \
   --video outputs/day05/<batch>/<episode>/preview.mp4
 ```
 

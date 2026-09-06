@@ -13,6 +13,7 @@ from pathlib import Path
 from robust_vla_recovery.envs.libero_smoke import prepare_libero_config
 from robust_vla_recovery.envs.task_adapter import TaskAdapter, load_task_catalog
 
+SEED = 378
 
 def main() -> int:
     os.environ["MUJOCO_GL"] = "egl"
@@ -31,10 +32,10 @@ def main() -> int:
         adapter = TaskAdapter(spec, backend)
         record = {"task": key, "libero_task_id": backend.task_id}
         try:
-            obs1, _ = adapter.reset(seed=20260905)
+            obs1, _ = adapter.reset(seed=SEED)
             state1 = backend.env._env.get_sim_state().copy()
             adapter.step(np.array([0, 0, 0, 0, 0, 0, -1], dtype=np.float32))
-            obs2, _ = adapter.reset(seed=20260905)
+            obs2, _ = adapter.reset(seed=SEED)
             state2 = backend.env._env.get_sim_state().copy()
             delta = float(np.max(np.abs(state1 - state2)))
             pixels_match = all(np.array_equal(obs1["pixels"][camera], obs2["pixels"][camera])
@@ -45,7 +46,7 @@ def main() -> int:
 
             # Reject invalid indices before stepping instead of silently taking modulo.
             try:
-                backend.reset(seed=20260905, init_state_index=backend.init_state_count)
+                backend.reset(seed=SEED, init_state_index=backend.init_state_count)
             except ValueError:
                 record["invalid_index_rejected"] = True
             else:
@@ -64,7 +65,7 @@ def main() -> int:
                 raise AssertionError("step after abort was accepted")
 
             if key == "open_drawer":
-                adapter.reset(seed=20260905)
+                adapter.reset(seed=SEED)
                 domain = backend.env._env.env
                 if domain._check_success():
                     raise AssertionError("drawer unexpectedly starts open")

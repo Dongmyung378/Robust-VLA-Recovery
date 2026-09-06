@@ -82,7 +82,8 @@ class TaskAdapterTests(unittest.TestCase):
         for spec in self.specs.values():
             with self.subTest(task=spec.key):
                 adapter = TaskAdapter(spec, FakeBackend())
-                adapter.reset()
+                _, reset_info = adapter.reset()
+                self.assertEqual(reset_info["seed"], 378)
                 for index in range(spec.horizon):
                     _, _, terminated, truncated, info = adapter.step(NOOP)
                     self.assertFalse(terminated)
