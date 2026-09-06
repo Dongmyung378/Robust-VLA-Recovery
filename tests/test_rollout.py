@@ -13,6 +13,9 @@ from robust_vla_recovery.data.collection import (
     collect, collection_requests, load_collection, storage_estimate, verify_batch,
 )
 from robust_vla_recovery.data.rollout import EpisodeWriter, file_hash, verify_episode, write_json
+from robust_vla_recovery.policy import (
+    LightweightBaselinePolicy, load_policy_config, record_failure_review,
+)
 
 DATA_AVAILABLE = all(importlib.util.find_spec(name) for name in ("numpy", "h5py"))
 REPO = Path(__file__).resolve().parents[1]
@@ -35,6 +38,20 @@ class CollectionConfigTests(unittest.TestCase):
                               "requests": requests[:-1], "results": [{}] * 19})
             with self.assertRaisesRegex(ValueError, "matrix"):
                 verify_batch(path)
+
+    def test_policy_config_fixes_day_six_contract(self):
+        config, spec = load_policy_config(REPO / "configs/policy.toml")
+        self.assertEqual((config.task, config.seed, config.steps), ("pick_place", 378, 100))
+        self.assertEqual(spec.control_frequency, 20)
+        self.assertEqual(config.action_scale, (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 1.0))
+
+    def test_policy_config_rejects_short_rollout(self):
+        source = (REPO / "configs/policy.toml").read_text(encoding="utf-8")
+        with tempfile.TemporaryDirectory(dir=REPO) as directory:
+            path = Path(directory) / "policy.toml"
+            path.write_text(source.replace("steps = 100", "steps = 99"), encoding="utf-8")
+            with self.assertRaisesRegex(ValueError, "between 100"):
+                load_policy_config(path)
 
 
 @unittest.skipUnless(DATA_AVAILABLE, "install requirements/data.txt for logger tests")
@@ -80,6 +97,36 @@ class RolloutTests(unittest.TestCase):
         value = json.loads(metadata.read_text())
         value["sha256"] = file_hash(metadata.parent / "episode.h5")
         write_json(metadata, value)
+
+    def test_lightweight_policy_is_deterministic_normalized_and_scaled(self):
+        scale = (0.05,) * 6 + (1.0,)
+        first = LightweightBaselinePolicy(seed=378, action_scale=scale)
+        second = LightweightBaselinePolicy(seed=378, action_scale=scale)
+        action = first.predict(self.observation(), "pick up the object")
+        self.np.testing.assert_array_equal(action, second.predict(
+            self.observation(), "pick up the object"
+        ))
+        self.assertEqual(action.shape, (7,))
+        self.assertLessEqual(float(self.np.abs(action[:6]).max()), 0.05)
+        self.assertLessEqual(float(self.np.abs(action[6])), 1.0)
+        features = first.encode(self.observation(), "pick up the object")
+        self.np.testing.assert_array_equal(features[:6], self.np.zeros(6))
+        self.np.testing.assert_allclose(features[6:9], self.np.full(3, 200 / 255), atol=1e-6)
+        self.assertNotEqual(first.contract()["weights_sha256"],
+                            LightweightBaselinePolicy(seed=379, action_scale=scale).contract()[
+                                "weights_sha256"
+                            ])
+
+    def test_manual_failure_review_is_validated_and_persisted(self):
+        metadata = self.completed()
+        record_failure_review(metadata, ["stalled"], [0, 2], "No task progress in sampled frames.")
+        review = json.loads(metadata.read_text())["manual_failure_review"]
+        self.assertEqual(review["status"], "reviewed")
+        self.assertEqual(review["candidate_types"], ["stalled"])
+        self.assertTrue(review["candidate_only"])
+        self.assertEqual(verify_episode(metadata)["status"], "verified")
+        with self.assertRaises(ValueError):
+            record_failure_review(metadata, ["unknown"], [0], "invalid")
 
     def completed_batch(self):
         config = {"tasks": ["stack"], "seeds": [42], "init_state_indices": [0],

@@ -27,6 +27,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Validate collection plan without simulation
         run: rvla-rollouts collect --dry-run
+      - name: Validate policy rollout contract without simulation
+        run: rvla-policy-rollout run --dry-run
 
   data-integrity:
     runs-on: ubuntu-latest

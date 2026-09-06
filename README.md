@@ -14,6 +14,8 @@ detection and closed-loop recovery in LIBERO.
   rules, one CLI, and real-simulator reset and success checks completed.
 - Day 5: lossless streaming rollout logger, 20 collected and independently
   verified episodes (16,040 RGB frames), corruption tests, and storage budget completed.
+- Day 6: image-state-language baseline policy adapter, action scaling, latency
+  logging, manual failure review, and a verified 100-step LIBERO rollout completed.
 
 See [the project charter](docs/project_charter.md) for the research question,
 task definitions, metrics, and scope-reduction rules.
@@ -162,3 +164,19 @@ python -m pip install -r requirements/data.txt
 python -m pip install --no-deps -e .
 python -m unittest discover -s tests -v
 ```
+
+## Baseline policy integration Day 6
+
+The Day 6 diagnostic policy connects both RGB cameras, robot state, and language
+to a bounded 7-dimensional action. Its seeded weights are untrained, so the run
+checks the inference path and timing rather than manipulation performance.
+
+```bash
+rvla-policy-rollout run --config configs/policy.toml --dry-run
+rvla-policy-rollout run --config configs/policy.toml
+rvla-policy-rollout review outputs/day06/<run>/metadata.json \
+  --candidate stalled --frame 0 --frame 100 --note "Manual review note"
+```
+
+The seed 378 reference run records 100 continuous policy steps. See the
+[Day 6 evaluation](docs/day06_evaluation.md) for measurements and limitations.
