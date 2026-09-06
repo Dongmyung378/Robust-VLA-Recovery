@@ -1,0 +1,10 @@
+# Linux/WSL2 only. These are the direct requirements used to regenerate
+# simulation-linux.lock. Resolve with `uv pip compile --torch-backend cu128`;
+# this keeps general packages on PyPI while selecting CUDA 12.8 wheels only for
+# the PyTorch ecosystem. Install from the lock, not this input file.
+
+cmake==3.31.6
+torch==2.11.0
+torchvision==0.26.0
+lerobot[libero,smolvla]==0.6.1
+hf-libero==0.1.4

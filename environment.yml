@@ -1,0 +1,11 @@
+name: robust-vla-recovery
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - cmake=3.31.6
+  - make
+  - c-compiler
+  - cxx-compiler
+  - ffmpeg=7.1.1

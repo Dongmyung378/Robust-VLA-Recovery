@@ -1,0 +1,19 @@
+[task]
+suite = "libero_spatial"
+task_id = 0
+init_state_index = 0
+
+[episode]
+seed = 20260904
+max_steps = 280
+control_frequency = 20
+settle_steps = 10
+
+[render]
+camera_names = ["agentview_image", "robot0_eye_in_hand_image"]
+width = 256
+height = 256
+video_fps = 20
+
+[artifacts]
+output_dir = "outputs/day03"

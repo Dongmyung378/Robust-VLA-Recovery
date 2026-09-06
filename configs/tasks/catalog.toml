@@ -1,0 +1,56 @@
+schema_version = 1
+
+[defaults]
+suite = "libero_90"
+horizon = 400
+control_frequency = 20
+settle_steps = 10
+stability_steps = 10
+
+[tasks.pick_place]
+name = "LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket"
+target_object = "alphabet_soup_1"
+goal = ["in", "alphabet_soup_1", "basket_1_contain_region"]
+instructions = [
+  "Pick up the alphabet soup and put it in the basket.",
+  "Place the alphabet soup in the basket.",
+  "Move the alphabet soup from the table into the basket.",
+  "Lift the alphabet soup and set it inside the basket.",
+  "Put the alphabet soup into the basket and release it.",
+]
+
+[tasks.stack]
+name = "KITCHEN_SCENE2_stack_the_black_bowl_at_the_front_on_the_black_bowl_in_the_middle"
+target_object = "akita_black_bowl_1"
+goal = ["on", "akita_black_bowl_1", "akita_black_bowl_2"]
+instructions = [
+  "Stack the black bowl at the front on the black bowl in the middle.",
+  "Place the front black bowl on top of the middle black bowl.",
+  "Pick up the front black bowl and stack it on the middle black bowl.",
+  "Put the black bowl nearest the front onto the black bowl in the middle.",
+  "Lift the front black bowl, place it on the middle black bowl, and release it.",
+]
+
+[tasks.open_drawer]
+name = "KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet"
+target_object = ""
+goal = ["open", "wooden_cabinet_1_top_region"]
+instructions = [
+  "Open the top drawer of the cabinet.",
+  "Pull open the cabinet's top drawer.",
+  "Slide the uppermost drawer of the cabinet open.",
+  "Use the handle to open the top drawer of the cabinet.",
+  "Pull out the cabinet's uppermost drawer until it is open.",
+]
+
+[tasks.shelf_place]
+name = "STUDY_SCENE4_pick_up_the_book_in_the_middle_and_place_it_on_the_cabinet_shelf"
+target_object = "black_book_1"
+goal = ["in", "black_book_1", "wooden_two_layer_shelf_1_top_region"]
+instructions = [
+  "Pick up the book in the middle and place it on the cabinet shelf.",
+  "Place the middle book on the cabinet shelf.",
+  "Move the book in the middle from the table to the cabinet shelf.",
+  "Lift the middle book and set it on the cabinet shelf.",
+  "Put the middle book on the cabinet shelf and release it.",
+]

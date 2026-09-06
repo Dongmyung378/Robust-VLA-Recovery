@@ -1,0 +1,14 @@
+schema_version = 1
+catalog = "configs/tasks/catalog.toml"
+output_dir = "outputs/day05"
+tasks = ["pick_place", "stack", "open_drawer", "shelf_place"]
+seeds = [20260906, 20260907, 20260908, 20260909, 20260910]
+init_state_indices = [0, 1, 2, 3, 4]
+instruction_indices = [0, 1, 2, 3, 4]
+width = 256
+height = 256
+gzip_level = 1
+
+[perturbation]
+enabled = false
+template_id = "clean-v1"

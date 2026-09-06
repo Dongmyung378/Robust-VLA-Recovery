@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=71,<82"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "robust-vla-recovery"
+version = "0.1.0"
+description = "Failure-aware VLA manipulation with temporal detection and closed-loop recovery"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[project.scripts]
+rvla-validate-config = "robust_vla_recovery.config:main"
+rvla-run-libero-smoke = "robust_vla_recovery.envs.libero_smoke:rollout_main"
+rvla-replay-episode = "robust_vla_recovery.envs.libero_smoke:replay_main"
+rvla-run-tasks = "robust_vla_recovery.envs.task_cli:main"
+rvla-rollouts = "robust_vla_recovery.data.collection:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]

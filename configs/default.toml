@@ -1,0 +1,9 @@
+[run]
+seed = 20260903
+device = "auto"
+output_dir = "outputs"
+deterministic = true
+
+[project]
+name = "robust-vla-recovery"
+tasks = ["pick_place", "stack", "open_drawer", "shelf_place"]

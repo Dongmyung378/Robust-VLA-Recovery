@@ -1,0 +1,3 @@
+# Lightweight data logger and integrity tests; no simulator/GPU dependency.
+numpy==2.2.6
+h5py==3.16.0
