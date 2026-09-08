@@ -41,7 +41,7 @@ class PolicyRolloutConfig:
     gzip_level: int
 
 
-def _safe_repo_path(value: Any, field: str) -> Path:
+def safe_repo_path(value: Any, field: str) -> Path:
     if (not isinstance(value, str) or not value.strip() or Path(value).is_absolute()
             or PureWindowsPath(value).is_absolute()
             or ".." in value.replace("\\", "/").split("/")):
@@ -61,8 +61,8 @@ def load_policy_config(path: str | Path) -> tuple[PolicyRolloutConfig, TaskSpec]
                 "action_scale", "gzip_level"}
     if set(raw) != expected or raw["schema_version"] != 1:
         raise ValueError("invalid policy rollout schema")
-    catalog_path = _safe_repo_path(raw["catalog"], "catalog")
-    output_dir = _safe_repo_path(raw["output_dir"], "output_dir")
+    catalog_path = safe_repo_path(raw["catalog"], "catalog")
+    output_dir = safe_repo_path(raw["output_dir"], "output_dir")
     catalog = load_task_catalog(catalog_path)
     task = raw["task"]
     if not isinstance(task, str) or task not in catalog:
@@ -165,7 +165,7 @@ class LightweightBaselinePolicy:
         }
 
 
-def _latency_summary(values_ns: list[int], control_frequency: int) -> dict:
+def latency_summary(values_ns: list[int], control_frequency: int) -> dict:
     import numpy as np
 
     values_ms = np.asarray(values_ns, dtype=np.float64) / 1_000_000
@@ -239,7 +239,7 @@ def run_policy_rollout(config_path: str | Path) -> Path:
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
         metadata["policy_inference"] = {
             **policy_contract, "warmup_calls_excluded": config.warmup_calls,
-            "latency": _latency_summary(latencies, spec.control_frequency),
+            "latency": latency_summary(latencies, spec.control_frequency),
             "scaled_action_min": action_array.min(axis=0).tolist(),
             "scaled_action_max": action_array.max(axis=0).tolist(),
             "continuous_steps": verified["steps"],

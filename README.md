@@ -16,6 +16,8 @@ detection and closed-loop recovery in LIBERO.
   verified episodes (16,040 RGB frames), corruption tests, and storage budget completed.
 - Day 6: image-state-language baseline policy adapter, action scaling, latency
   logging, manual failure review, and a verified 100-step LIBERO rollout completed.
+- Day 7: 40 clean-condition baseline episodes, per-task metrics, five reviewed
+  failure videos, a fixed Week 2 data budget, and end-to-end verification completed.
 
 See [the project charter](docs/project_charter.md) for the research question,
 task definitions, metrics, and scope-reduction rules.
@@ -180,3 +182,24 @@ rvla-policy-rollout review outputs/day06/<run>/metadata.json \
 
 The seed 378 reference run records 100 continuous policy steps. See the
 [Day 6 evaluation](docs/day06_evaluation.md) for measurements and limitations.
+
+## Clean-condition baseline evaluation Day 7
+
+The evaluator runs all four tasks over seeds 378 through 387, records episode
+time, inference latency and CUDA memory, keeps exactly five reviewed failure
+videos, and verifies the result matrix and video checksums.
+
+```bash
+rvla-baseline-eval run --config configs/baseline_eval.toml --dry-run
+rvla-baseline-eval run --config configs/baseline_eval.toml
+rvla-baseline-eval review outputs/day07/<run>/results.json \
+  --episode <episode-id> --candidate stalled --frame 0 --note "Review note"
+rvla-baseline-eval verify outputs/day07/<run>/results.json
+```
+
+The Day 7 reference evaluation completed 40 of 40 episodes. The deterministic,
+untrained systems baseline achieved 0 of 10 successes on every task, with
+5.144 ms mean inference latency and no 50 ms deadline misses. This is a valid
+lower-bound integration result, not a trained VLA performance claim. See the
+[Day 7 evaluation](docs/day07_evaluation.md) for the full table, failure review,
+and Week 2 data plan.

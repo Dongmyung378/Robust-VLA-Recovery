@@ -67,6 +67,6 @@ step의 native success도 false였다. metadata에는 `grasp_failed`와 `stalled
 - 수동 검토 내용을 추가한 뒤에도 episode 재검증이 통과했다.
 - `pip check`에서 깨진 dependency가 없었다.
 
-Day 7에서는 학습된 정책 checkpoint를 준비한 뒤 계획된 seed별 성공률과 GPU
-메모리, episode latency를 측정해야 한다. 이번 미학습 정책의 `success=false`는
-그 기준선에 포함하지 않는다.
+Day 7에서는 이 미학습 시스템 기준선을 네 태스크와 seed 10개로 확장해 성공률,
+GPU 메모리와 episode latency를 측정한다. 학습된 정책과의 성능 비교는 Week 2
+demonstration 학습 이후 같은 평가 계약으로 수행한다.

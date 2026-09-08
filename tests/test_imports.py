@@ -15,6 +15,7 @@ class ImportSmokeTest(unittest.TestCase):
             "robust_vla_recovery.envs.libero_tasks",
             "robust_vla_recovery.envs.task_cli",
             "robust_vla_recovery.policy",
+            "robust_vla_recovery.evaluation",
         )
         for module in modules:
             with self.subTest(module=module):

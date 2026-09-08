@@ -13,6 +13,10 @@ from robust_vla_recovery.data.collection import (
     collect, collection_requests, load_collection, storage_estimate, verify_batch,
 )
 from robust_vla_recovery.data.rollout import EpisodeWriter, file_hash, verify_episode, write_json
+from robust_vla_recovery.evaluation import (
+    aggregate_results, evaluation_requests, load_eval_config, select_failure_ids,
+    week2_data_plan,
+)
 from robust_vla_recovery.policy import (
     LightweightBaselinePolicy, load_policy_config, record_failure_review,
 )
@@ -52,6 +56,48 @@ class CollectionConfigTests(unittest.TestCase):
             path.write_text(source.replace("steps = 100", "steps = 99"), encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "between 100"):
                 load_policy_config(path)
+
+    def test_day_seven_config_has_four_tasks_and_ten_seeds(self):
+        config, _ = load_eval_config(REPO / "configs/baseline_eval.toml")
+        requests = evaluation_requests(config)
+        self.assertEqual((config.policy_seed, len(requests)), (378, 40))
+        self.assertEqual({request["seed"] for request in requests}, set(range(378, 388)))
+        self.assertEqual({request["task"] for request in requests},
+                         {"pick_place", "stack", "open_drawer", "shelf_place"})
+
+    def test_failure_selection_covers_each_task_before_filling(self):
+        config, _ = load_eval_config(REPO / "configs/baseline_eval.toml")
+        results = [{**request, "status": "complete", "success": False}
+                   for request in evaluation_requests(config)]
+        selected = select_failure_ids(config.tasks, results, 5)
+        selected_tasks = [next(r["task"] for r in results if r["episode_id"] == episode_id)
+                          for episode_id in selected]
+        self.assertEqual(set(selected_tasks[:4]), set(config.tasks))
+        self.assertEqual(len(selected), 5)
+
+    def test_aggregate_reports_success_time_latency_and_gpu(self):
+        records = []
+        for index in range(2):
+            records.append({"task": "stack", "status": "complete", "success": index == 0,
+                            "episode_seconds": 10.0 + index,
+                            "inference": {"calls": 100, "mean_ms": 2.0 + index,
+                                          "deadline_misses": index},
+                            "gpu": {"peak_allocated_bytes": index * 10,
+                                    "peak_reserved_bytes": index * 20}})
+        summary = aggregate_results(["stack"], records)["by_task"]["stack"]
+        self.assertEqual(summary["success_rate"], 0.5)
+        self.assertEqual(summary["mean_episode_seconds"], 10.5)
+        self.assertEqual(summary["mean_inference_ms"], 2.5)
+        self.assertEqual(summary["deadline_misses"], 1)
+        self.assertEqual(summary["peak_gpu_reserved_bytes"], 20)
+
+    def test_week_two_data_plan_uses_measured_day_five_size(self):
+        plan = week2_data_plan(4)
+        self.assertEqual(plan["split_per_task"], {"train": 40, "validation": 5, "test": 5})
+        self.assertEqual(plan["target_valid_episodes"], 200)
+        self.assertEqual(plan["target_transitions"], 80_000)
+        self.assertEqual(plan["estimated_dataset_bytes"], 12_823_959_800)
+        self.assertEqual(plan["storage_budget_bytes_with_20_percent_headroom"], 15_388_751_760)
 
 
 @unittest.skipUnless(DATA_AVAILABLE, "install requirements/data.txt for logger tests")

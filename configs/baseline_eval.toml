@@ -1,0 +1,11 @@
+schema_version = 1
+catalog = "configs/tasks/catalog.toml"
+output_dir = "outputs/day07"
+tasks = ["pick_place", "stack", "open_drawer", "shelf_place"]
+seeds = [378, 379, 380, 381, 382, 383, 384, 385, 386, 387]
+init_state_indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+instruction_indices = [0, 1, 2, 3, 4, 0, 1, 2, 3, 4]
+policy_seed = 378
+warmup_calls = 10
+action_scale = [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 1.0]
+failure_videos = 5

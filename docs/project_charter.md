@@ -159,7 +159,9 @@
 | 2026-09-03 | 일일 집중 작업 예산을 임시 4시간으로 설정 | 사용자 가용 시간이 아직 확인되지 않았으므로 보수적인 기본값을 사용한다. |
 | 2026-09-03 | 실행 기준을 WSL2/Linux, Python 3.12, LeRobot 0.6.1로 고정 | 최신 LeRobot의 LIBERO extra가 Linux 전용이며 SmolVLA와 함께 관리되는 통합 경로를 제공한다. |
 | 2026-09-05 | Day 4의 네 태스크를 `libero_90`의 name으로 매핑하고 400 step / 20 Hz로 고정 | 실제 BDDL의 language와 goal을 대조했다. ID는 각각 46, 16, 7, 86이며 상세 계약과 실행 증거는 `docs/day04_evaluation.md`에 기록했다. |
+| 2026-09-08 | Week 2 유효 demonstration 목표를 태스크당 50개, 총 200개로 고정 | Day 5 실측 평균 64,119,799 bytes를 기준으로 원본 약 11.94 GiB, 20% 여유 포함 약 14.33 GiB가 필요해 현재 장비에서 관리 가능하다. 태스크별 split은 train 40, validation 5, test 5이며 부족분을 합성하거나 중복 사용하지 않는다. |
 
 ## 14. 다음 작업
 
-Day 2에는 저장소 골격(`src`, `configs`, `scripts`, `tests`, `docs`, `assets`, `outputs`)을 만들고, Python 버전과 의존성 관리 방식, 공통 seed/device/output 설정, import smoke test 및 config validation을 구현한다.
+Day 8에는 공식 demonstration source를 검사하고, 태스크별 유효 개수와 파일 구조를
+확인한 뒤 Day 7에서 고정한 split과 저장공간 예산을 적용한다.
