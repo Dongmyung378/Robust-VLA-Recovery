@@ -1,0 +1,38 @@
+schema_version = 1
+catalog = "configs/tasks/catalog.toml"
+dataset_root = "data/libero_90"
+output_dir = "outputs/day08"
+
+[source]
+repository = "yifengzhu-hf/LIBERO-datasets"
+revision = "f13aa24a3da8c43c7225569f28c562979fa0e35a"
+
+[expected]
+action_dim = 7
+image_shape = [128, 128, 3]
+
+[split]
+seed = 378
+train = 40
+validation = 5
+test = 5
+
+[tasks.pick_place]
+file = "LIVING_ROOM_SCENE1_pick_up_the_alphabet_soup_and_put_it_in_the_basket_demo.hdf5"
+bytes = 692219541
+sha256 = "95479e7fbbde98d04aa90cb35475429ee984face159de74fa02eac9dc3e63757"
+
+[tasks.stack]
+file = "KITCHEN_SCENE2_stack_the_black_bowl_at_the_front_on_the_black_bowl_in_the_middle_demo.hdf5"
+bytes = 641644880
+sha256 = "f4d4ae39d812c212e075bfa1f82ef37a56942bb8c981544468afb0c8ca8c47a4"
+
+[tasks.open_drawer]
+file = "KITCHEN_SCENE1_open_the_top_drawer_of_the_cabinet_demo.hdf5"
+bytes = 472881442
+sha256 = "6d9f2f4473f5c1dbce6f8061c82f3e7369203e1a3802cc15f79b042b9dc90bc0"
+
+[tasks.shelf_place]
+file = "STUDY_SCENE4_pick_up_the_book_in_the_middle_and_place_it_on_the_cabinet_shelf_demo.hdf5"
+bytes = 800762622
+sha256 = "5f047a7d1ff6b7763a5940f183b4c682fa74a6864b67a33296da08610bb31423"

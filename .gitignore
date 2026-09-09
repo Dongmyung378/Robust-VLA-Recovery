@@ -26,6 +26,9 @@ outputs/**
 checkpoints/
 wandb/
 
+# Internal project records
+/local_notes/
+
 # Editor and OS files
 .DS_Store
 Thumbs.db

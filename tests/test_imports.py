@@ -8,6 +8,7 @@ class ImportSmokeTest(unittest.TestCase):
             "robust_vla_recovery",
             "robust_vla_recovery.config",
             "robust_vla_recovery.data",
+            "robust_vla_recovery.data.demo_audit",
             "robust_vla_recovery.data.rollout",
             "robust_vla_recovery.data.collection",
             "robust_vla_recovery.envs",
