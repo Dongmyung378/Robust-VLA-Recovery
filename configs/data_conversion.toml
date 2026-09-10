@@ -1,0 +1,13 @@
+schema_version = 1
+audit_config = "configs/data_audit.toml"
+output_dir = "outputs/day09"
+control_frequency = 20
+state_fields = ["ee_states", "gripper_states", "joint_states"]
+
+[compression]
+codec = "gzip"
+level = 1
+
+[tokenizer]
+name = "lowercase-wordpunct-v1"
+lowercase = true

@@ -1,5 +1,7 @@
 # Lossless Rollout Format
 
+[한국어](rollout-format.ko.md) | [Project README](../README.md)
+
 ## Transition alignment
 
 The project stores the two original LeRobot `uint8` RGB streams without resizing, flipping, or

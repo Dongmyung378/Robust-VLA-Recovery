@@ -1,5 +1,7 @@
 # LIBERO Demonstration Data Card
 
+[한국어](data-card.ko.md) | [Project README](../README.md)
+
 ## Scope and source
 
 This card covers the four official LIBERO demonstration files selected for policy training in

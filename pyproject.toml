@@ -17,6 +17,7 @@ rvla-replay-episode = "robust_vla_recovery.envs.libero_smoke:replay_main"
 rvla-run-tasks = "robust_vla_recovery.envs.task_cli:main"
 rvla-rollouts = "robust_vla_recovery.data.collection:main"
 rvla-demo-audit = "robust_vla_recovery.data.demo_audit:main"
+rvla-convert-demos = "robust_vla_recovery.data.conversion:main"
 rvla-policy-rollout = "robust_vla_recovery.policy:main"
 rvla-baseline-eval = "robust_vla_recovery.evaluation:main"
 

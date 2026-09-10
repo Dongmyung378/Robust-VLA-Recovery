@@ -1,6 +1,6 @@
 # Robust VLA Recovery
 
-[한국어 README](README.ko.md) | [Research protocol](portfolio/research-protocol.md) | [Data card](portfolio/data-card.md) | [Rollout format](portfolio/rollout-format.md)
+[한국어 README](README.ko.md) | [Research protocol](portfolio/research-protocol.md) | [Data card](portfolio/data-card.md) | [Training format](portfolio/training-format.md) | [Rollout format](portfolio/rollout-format.md)
 
 Robust VLA Recovery studies whether temporal failure detection and constrained recovery
 actions can improve vision-language-action manipulation under distribution shift. The project
@@ -69,9 +69,10 @@ success rules, metrics, and scope constraints are in the
 - A deterministic lightweight policy used only to validate the control path
 - A 40-episode clean-condition baseline evaluation across four tasks
 - An official demonstration auditor with pinned source hashes and leakage-safe splits
+- A deterministic policy-training conversion with explicit episode and language alignment
 
-The lightweight policy is not trained and does not represent VLA quality. Training starts after
-the official demonstrations are converted to the learning format.
+The lightweight policy is not trained and does not represent VLA quality. The official
+demonstrations are now ready for the Day 10 single-task smoke fine-tuning stage.
 
 ## Official demonstration audit
 
@@ -91,6 +92,18 @@ stream.
 The upstream HDF5 files do not expose generator seeds. The deterministic split therefore uses
 seed `378` and keeps identical initial-state hashes within one split. See the
 [data card](portfolio/data-card.md) for source, quality, exclusion, and licensing details.
+
+## Policy-training dataset
+
+Day 9 converted all 200 demonstrations and 26,145 transitions into one lossless HDF5 training
+dataset. Each transition contains the two original RGB observations, a 15-value robot state, a
+7-value action, a frame index, an exact 20 Hz timestamp, and an index that binds the frame to its
+episode instruction. Cumulative offsets preserve all 200 episode boundaries.
+
+Two independent conversions produced the same 1,192,042,683-byte HDF5 file with SHA-256
+`f8ec588217d3c5a19f350394d01f428d9380efd1ae1e2e74a53ca2d3ff082da0`. Ten samples spanning
+all tasks and all splits matched the source pixels, states, and actions exactly after the declared
+`float32` cast. See the [training format](portfolio/training-format.md) for the schema and checks.
 
 ## Quick start
 
@@ -127,6 +140,10 @@ python -m unittest discover -s tests -v
 | `rvla-demo-audit plan` | Show the pinned official data inventory |
 | `rvla-demo-audit run` | Audit demonstrations and generate deterministic splits |
 | `rvla-demo-audit verify outputs/day08/<run>/audit.json` | Recheck the audit and source hashes |
+| `rvla-convert-demos plan` | Show the fixed policy-training conversion contract |
+| `rvla-convert-demos run` | Convert the audited demonstrations |
+| `rvla-convert-demos verify outputs/day09/<run>/conversion.json` | Recheck source, schema, boundaries, and checksum |
+| `rvla-convert-demos sample-check outputs/day09/<run>/conversion.json --count 10` | Compare ten source and converted episodes |
 
 The four official HDF5 files belong under `data/libero_90/`. Both `data/` and `outputs/` are
 local-only and excluded from Git.
@@ -134,8 +151,8 @@ local-only and excluded from Git.
 ## Repository layout
 
 ```text
-configs/       Frozen run, task, evaluation, and data-audit settings
-portfolio/     Public research protocol, data card, and storage specification
+configs/       Frozen run, task, evaluation, audit, and conversion settings
+portfolio/     English-first public documents with matching Korean versions
 src/           Installable Python package
 scripts/       Simulator contract checks
 tests/         Unit and integrity tests
@@ -151,4 +168,5 @@ counts are pinned in versioned configuration. Large data and execution evidence 
 the repository stays reviewable.
 
 The project currently covers simulation only. It does not claim real-robot transfer, and the
-current baseline result must not be interpreted as trained VLA performance.
+current baseline result must not be interpreted as trained VLA performance. The Day 9 tokenizer
+checks alignment and vocabulary provenance; the model-specific tokenizer remains a Day 10 step.

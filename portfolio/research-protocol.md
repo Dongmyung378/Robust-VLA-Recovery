@@ -1,5 +1,7 @@
 # Research Protocol
 
+[한국어](research-protocol.ko.md) | [Project README](../README.md)
+
 ## Objective
 
 This project tests whether temporal failure detection and constrained rule-based recovery improve
